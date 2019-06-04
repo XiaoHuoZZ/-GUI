@@ -20,9 +20,22 @@ namespace GUI
 
         private String filePath;
         private String pyPath;
+        private String outputPath;
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            flag_std_tb.Text = "0";
+            line_tb.Text = "255";
+            rank_tb.Text = "3000";
+            clusteringNum_tb.Text = "5";
+            threshold_tb.Text = "2.5";
+            iteration_tb.Text = "100";
+            eps_tb.Text = "0.25";
+            min_samples_tb.Text = "10";
+            lam_tb.Text = "0.8";
+            max_iter_tb.Text = "50";
+            max_comp_tb.Text = "20";
+            
 
         }
 
@@ -64,7 +77,22 @@ namespace GUI
             p.Start();//启动程序
 
             //向cmd窗口发送输入信息
-            p.StandardInput.WriteLine("python "+pyPath+" "+filePath + "&exit");
+            String command = "python " + pyPath_tbox.Text + 
+                " " + filePath_tbox.Text +
+                " " + outfile_tb.Text +
+                " " + flag_std_tb.Text +
+                " " + line_tb.Text +
+                " " + rank_tb.Text +
+                " " + clusteringNum_tb.Text +
+                " " + threshold_tb.Text +
+                " " + iteration_tb.Text +
+                " " + eps_tb.Text +
+                " " + min_samples_tb.Text +
+                " " + lam_tb.Text +
+                " " + max_iter_tb.Text +
+                " " + max_comp_tb.Text +
+                "&exit";
+            p.StandardInput.WriteLine(command);
 
             p.StandardInput.AutoFlush = true;
             //p.StandardInput.WriteLine("exit");
@@ -77,7 +105,26 @@ namespace GUI
             string output = p.StandardOutput.ReadToEnd();
             p.WaitForExit();//等待程序执行完退出进程
             p.Close();
-            MessageBox.Show(output);
+            NotifyForm n = new NotifyForm();
+            n.setText(output);
+            n.Show();
+
+        }
+
+        private void SelectOutFile_tb_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.Description = "请选择输出文件地址";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(dialog.SelectedPath))
+                {
+                    MessageBox.Show(this, "文件夹路径不能为空", "提示");
+                }
+                outputPath = dialog.SelectedPath;
+                outfile_tb.Text = outputPath;
+            }
+          
         }
     }
 }
