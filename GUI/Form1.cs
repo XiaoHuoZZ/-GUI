@@ -57,7 +57,7 @@ namespace GUI
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Multiselect = true;//该值确定是否可以选择多个文件
             dialog.Title = "请选择脚本";
-            dialog.Filter = "文件(*.py)|*.py";
+            dialog.Filter = "文件(*.py,*.exe)|*.py;*.exe";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 pyPath = dialog.FileName;
@@ -76,8 +76,12 @@ namespace GUI
             p.StartInfo.CreateNoWindow = true;//不显示程序窗口
             p.Start();//启动程序
 
-            //向cmd窗口发送输入信息
-            String command = "python " + pyPath_tbox.Text + 
+            String suffix = pyPath_tbox.Text;
+
+            String command = null;
+            if(suffix.Contains(".exe"))
+            {
+                command= pyPath_tbox.Text +
                 " " + filePath_tbox.Text +
                 " " + outfile_tb.Text +
                 " " + flag_std_tb.Text +
@@ -92,6 +96,27 @@ namespace GUI
                 " " + max_iter_tb.Text +
                 " " + max_comp_tb.Text +
                 "&exit";
+            }
+            else
+            {
+                command = "python " + pyPath_tbox.Text +
+                " " + filePath_tbox.Text +
+                " " + outfile_tb.Text +
+                " " + flag_std_tb.Text +
+                " " + line_tb.Text +
+                " " + rank_tb.Text +
+                " " + clusteringNum_tb.Text +
+                " " + threshold_tb.Text +
+                " " + iteration_tb.Text +
+                " " + eps_tb.Text +
+                " " + min_samples_tb.Text +
+                " " + lam_tb.Text +
+                " " + max_iter_tb.Text +
+                " " + max_comp_tb.Text +
+                "&exit";
+            }
+
+            
             p.StandardInput.WriteLine(command);
 
             p.StandardInput.AutoFlush = true;
